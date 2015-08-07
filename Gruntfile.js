@@ -13,7 +13,15 @@
  */
 
 module.exports = function(grunt) {
+	grunt.config.set('bower', {
+		dev: {
+		    dest: '.tmp/public',
+		    js_dest: '.tmp/public/js',
+		    css_dest: '.tmp/public/styles'
+		}
+	});
 
+	grunt.loadNpmTasks('grunt-bower');
 
 	// Load the include-all library in order to require all of our grunt
 	// configurations and task registrations dynamically.
@@ -61,9 +69,6 @@ module.exports = function(grunt) {
 			}
 		}
 	}
-
-
-
 
 	// Load task functions
 	var taskConfigurations = loadTasks('./tasks/config'),
