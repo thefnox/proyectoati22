@@ -8,7 +8,14 @@
 module.exports = {
 
   attributes: {
-
+  	tasks:{
+  		collection: 'todotask',
+  		via: 'list'
+  	},
+  	owner:{
+  		model:'user',
+  		required: true
+  	}
   }
 };
 

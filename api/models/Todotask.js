@@ -8,7 +8,20 @@
 module.exports = {
 
   attributes: {
-
+  	description:'STRING',
+  	dueDate:'DATE',
+  	complete:{
+  		type: 'boolean',
+  		defaultsTo: false
+  	},
+  	priority:{
+  		type: 'int',
+  		defaultsTo: 1
+  	},
+  	type: 'STRING',
+  	list: {
+  		model:'todo'
+  	}
   }
 };
 

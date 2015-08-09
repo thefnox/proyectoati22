@@ -8,7 +8,14 @@
 module.exports = {
 
   attributes: {
-
+  	name:'STRING',
+  	tasks:{
+  		collection: 'agendatask',
+  		via: 'agenda'
+  	},
+  	owner:{
+  		model:'user'
+  	}
   }
 };
 

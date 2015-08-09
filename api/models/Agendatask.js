@@ -8,7 +8,12 @@
 module.exports = {
 
   attributes: {
-
+  	task:{
+  		model:'todotask'
+  	},
+  	agenda:{
+  		model:'agenda'
+  	}
   }
 };
 
