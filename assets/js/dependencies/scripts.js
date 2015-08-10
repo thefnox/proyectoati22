@@ -30,26 +30,30 @@ angular.module("myAgenda",['ui.bootstrap',"ui.router","ngAnimate"]).config(["$st
 		.state("overview",{
 			url:"/overview",
 			parent:"dashboard",
-			templateUrl:"views/dashboard/overview.html"
+			templateUrl:"views/dashboard/overview.html",
+			controller:"DashboardCtrl"
 		})
 		.state("today",{
 			url:"/today",
 			parent:"dashboard",
-			templateUrl:"views/dashboard/today.html"
+			templateUrl:"views/dashboard/today.html",
+			controller:"DashboardCtrl"
 		})
 		.state("todo",{
 			url:"/todo",
 			parent:"dashboard",
-			templateUrl:"views/dashboard/todo.html"
+			templateUrl:"views/dashboard/todo.html",
+			controller:"DashboardCtrl"
 		})
 		.state("settings",{
 			url:"/settings",
 			parent:"dashboard",
-			templateUrl:"views/dashboard/settings.html"
+			templateUrl:"views/dashboard/settings.html",
+			controller:"DashboardCtrl"
 		})
 	}]),
-angular.module("myAgenda").controller("LoginCtrl",["$scope","$location", "$http", "userService",
-	function(r,t, $http, user){
+angular.module("myAgenda").controller("LoginCtrl",["$scope","$location", "$http", "userService", '$interval',
+	function(r,t, $http, user, $interval){
 		r.errors = [],
 		r.submit=function(){
 			$http.post('/auth/local', {
@@ -59,7 +63,7 @@ angular.module("myAgenda").controller("LoginCtrl",["$scope","$location", "$http"
 			.then(function(response){
 				console.log("response is ", response)
 				if (response.data.errors === undefined || response.data.errors.length <= 0){
-					user.setUserId = response.data.userid;
+					user.setUserId(response.data.userid);
 					$http.get("/task")
 					.then(function(response){
 						if (response.data != undefined){
@@ -103,17 +107,22 @@ angular.module("myAgenda").controller("RegisterCtrl",["$scope", "$location", "$h
 			})
 		}
 	}]),
-angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$location", "$http", "userService",
-	function(r,t, l, $http, user){
+angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$location", "$http", "userService", "$interval",
+	function(r,t, l, $http, user, $interval){
 		r.$state=t;
-		r.taskDescription = "";
-		r.taskType = "";
+		r.tasks = {};
 		r.dueDate = new Date();
 		r.selectedTask = {};
 		r.priority = 1;
 		r.maxPriority = 9;
 		r.leaveopen = 1;
+		r.taskDescription = "test";
+		r.taskType = "Unsorted";
+		$interval(function() {
+        	r.refreshTasks();
+		}, 5000);
 		r.logout=function(){
+			user.setUserId(-1);
 			$http.get('/logout')
 			.then(function(response){
 				return l.path("/login"),!1
@@ -126,26 +135,28 @@ angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$loca
 			
 		}
 		r.refreshTasks=function(){
+			console.log("Tasks refreshed")
 			$http.get("/task")
 			.then(function(response){
 				if (response.data != undefined){
-					user.setTasks = response.data;
+					console.log(response.data)
+					user.setTasks(response.data);
+					r.tasks = user.getTasks();
 				}
 			})
 		}
 		r.createTask=function(){
 			var request = {
 				description: r.taskDescription,
-				type: r.taskType,
 				priority: r.priority,
 				taskType: r.taskType,
 				done: false,
 				owner: user.getUserId()
 			};
-			console.log(request);
+			console.log("oh wait", request);
 			$http.post('/task', request)
 			.then(function(response){
-				return l.path("/overview"), !1
+				return l.path("/dashboard"), !1
 			}, function(response){
 				console.log("error ")
 				console.log(response)

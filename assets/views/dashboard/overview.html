@@ -3,7 +3,12 @@
 	<span class="glyphicon glyphicon-tasks bg-fade"></span>
 	<div class=jumbotron>
 		<div class=container elem-ready='refreshTasks()'>
-			<h1>Welcome!</h1> You don't have any tasks available<br><br> <p> <a ui-sref=todo class="btn btn-primary btn-lg btn-outline btn-rounded">Create one!</a> </p>
+			<div ng-show="!tasks.length">
+				<h1>Welcome!</h1> You don't have any tasks available<br><br> <p> <a ui-sref=todo class="btn btn-primary btn-lg btn-outline btn-rounded">Create one!</a> </p>
+			</div>
+			<div ng-repeat="task in tasks">
+				{{ task.description }}
+			</div>
 		</div>
 	</div>
 </div>
