@@ -147,7 +147,7 @@ var AuthController = {
       switch (action) {
         case 'register':
           res.badRequest({
-            errors:errors
+            errors:errors,
           });
           break;
         case 'disconnect':
@@ -155,7 +155,7 @@ var AuthController = {
           break;
         default:
           res.badRequest({
-            errors:errors
+            errors:errors,
           });
       }
     }
@@ -175,7 +175,9 @@ var AuthController = {
         
         // Upon successful login, send the user to the homepage were req.user
         // will be available.
-        res.ok();
+        res.ok({
+          userid: req.user.id
+        });
       });
     });
   },

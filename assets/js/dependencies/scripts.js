@@ -1,5 +1,5 @@
 "use strict";
-angular.module("yapp",["ui.router","ngAnimate"]).config(["$stateProvider","$urlRouterProvider",
+angular.module("myAgenda",['ui.bootstrap',"ui.router","ngAnimate"]).config(["$stateProvider","$urlRouterProvider",
 	function(r,t)
 	{
 		t.when("/dashboard","/dashboard/overview"),
@@ -48,8 +48,8 @@ angular.module("yapp",["ui.router","ngAnimate"]).config(["$stateProvider","$urlR
 			templateUrl:"views/dashboard/settings.html"
 		})
 	}]),
-angular.module("yapp").controller("LoginCtrl",["$scope","$location", "$http",
-	function(r,t, $http){
+angular.module("myAgenda").controller("LoginCtrl",["$scope","$location", "$http", "userService",
+	function(r,t, $http, user){
 		r.errors = [],
 		r.submit=function(){
 			$http.post('/auth/local', {
@@ -58,8 +58,16 @@ angular.module("yapp").controller("LoginCtrl",["$scope","$location", "$http",
 			})
 			.then(function(response){
 				console.log("response is ", response)
-				if (response.data.errors === undefined || response.data.errors.length <= 0)
-					return t.path("/dashboard"),!1
+				if (response.data.errors === undefined || response.data.errors.length <= 0){
+					user.setUserId = response.data.userid;
+					$http.get("/task")
+					.then(function(response){
+						if (response.data != undefined){
+							user.setTasks = response.data;
+						}
+						return t.path("/dashboard"),!1
+					})
+				}
 				else
 					r.errors = response.data.errors;
 			}, function(response){
@@ -71,7 +79,7 @@ angular.module("yapp").controller("LoginCtrl",["$scope","$location", "$http",
 			return t.path("/register"),!1
 		}
 	}]),
-angular.module("yapp").controller("RegisterCtrl",["$scope", "$location", "$http",
+angular.module("myAgenda").controller("RegisterCtrl",["$scope", "$location", "$http",
 	function(r,t, $http){
 		r.errors = [],
 		r.goBack=function(){
@@ -95,20 +103,56 @@ angular.module("yapp").controller("RegisterCtrl",["$scope", "$location", "$http"
 			})
 		}
 	}]),
-angular.module("yapp").controller("DashboardCtrl",["$scope","$state", "$http",
-	function(r,t, $http){
-		r.$state=t
+angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$location", "$http", "userService",
+	function(r,t, l, $http, user){
+		r.$state=t;
+		r.taskDescription = "";
+		r.taskType = "";
+		r.dueDate = new Date();
+		r.selectedTask = {};
+		r.priority = 1;
+		r.maxPriority = 9;
+		r.leaveopen = 1;
 		r.logout=function(){
 			$http.get('/logout')
 			.then(function(response){
-				return t.path("/login"),!1
+				return l.path("/login"),!1
 			}, function(response){
 				console.log("Error has occurred", response.data.errors)
 				r.errors = response.data.errors;
 			})
 		}
+		r.changePassword=function(){
+			
+		}
+		r.refreshTasks=function(){
+			$http.get("/task")
+			.then(function(response){
+				if (response.data != undefined){
+					user.setTasks = response.data;
+				}
+			})
+		}
+		r.createTask=function(){
+			var request = {
+				description: r.taskDescription,
+				type: r.taskType,
+				priority: r.priority,
+				taskType: r.taskType,
+				done: false,
+				owner: user.getUserId()
+			};
+			console.log(request);
+			$http.post('/task', request)
+			.then(function(response){
+				return l.path("/overview"), !1
+			}, function(response){
+				console.log("error ")
+				console.log(response)
+			})
+		}
 	}]);
-angular.module("yapp").directive('equals', function() {
+angular.module("myAgenda").directive('equals', function() {
   return {
     restrict: 'A', // only activate on element attribute
     require: '?ngModel', // get a hold of NgModelController
@@ -135,4 +179,22 @@ angular.module("yapp").directive('equals', function() {
       };
     }
   }
-});
+})
+angular.module("myAgenda").service('userService', function(){
+	var userid = 0;
+	var tasks = {};
+	return {
+		getUserId: function (){
+			return userid
+		},
+		setTasks: function (value){
+			tasks = {}
+		},
+		getTasks: function(){
+			return tasks;
+		},
+		setUserId: function (value){
+			userid = value
+		}
+	}
+})

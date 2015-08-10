@@ -50,6 +50,10 @@ module.exports.policies = {
 	// }
   '*': ['passport', 'sessionAuth'],
 
+  'user': false,
+
+  //'task': ['passport', 'sessionAuth', 'taskOwner'],
+
   'auth': {
     '*': ['passport']
   }

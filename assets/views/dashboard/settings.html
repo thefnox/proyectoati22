@@ -4,6 +4,33 @@
 	<span class="glyphicon glyphicon-wrench bg-fade"></span>
 	<div class=jumbotron>
 		<div class=container>
+			<div class="panel panel-primary">
+				<div class="panel-heading"><h3>Change your password</h3></div>
+				<form role=form name="changepasswordform" ng-submit=changePassword() novalidate>
+	 				<div class="form-content panel-body">
+	 					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+	 						<input type=password ng-model="password" name="password" class="form-control input-lg" placeholder="Old password" required equals="{{confirmpassword}}">
+						</div>
+	 					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+	 						<input type=password ng-model="confirmpassword" name="confirmpassword" class="form-control input-lg" placeholder="Confirm Password" required equals="{{password}}">
+						</div>
+		 					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+	 						<input type=password ng-minlength="8" ng-maxlength="16" ng-model="newpassword" name="newpassword" class="form-control input-lg" placeholder="New Password" required>
+						</div>
+						<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-4">
+							<button ng-disabled="changepasswordform.newpassword.$invalid || changepasswordform.confirmpassword.$invalid || changepasswordform.password.$invalid" type=submit class="btn btn-blue btn-lg btn-rounded">Change your Password</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="panel panel-primary">
+				<div class="panel-heading"><h3>Change your moments</h3></div>
+				<form role=form name="changemomentsform" ng-submit=changeMoments() novalidate>
+	 				<div class="form-content panel-body">
+
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>
