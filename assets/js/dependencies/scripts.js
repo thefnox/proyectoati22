@@ -1,5 +1,5 @@
 "use strict";
-angular.module("myAgenda",['ui.bootstrap',"ui.router","ngAnimate"]).config(["$stateProvider","$urlRouterProvider",
+angular.module("myAgenda",['ui.bootstrap',"ui.router","ngAnimate", 'ngCookies']).config(["$stateProvider","$urlRouterProvider",
 	function(r,t)
 	{
 		t.when("/dashboard","/dashboard/overview"),
@@ -111,13 +111,12 @@ angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$loca
 	function(r,t, l, $http, user, $interval){
 		r.$state=t;
 		r.tasks = {};
-		r.dueDate = new Date();
+		r.minDate = new Date();
 		r.selectedTask = {};
 		r.priority = 1;
 		r.maxPriority = 9;
 		r.leaveopen = 1;
-		r.taskDescription = "test";
-		r.taskType = "Unsorted";
+		r.types = [];
 		$interval(function() {
         	r.refreshTasks();
 		}, 5000);
@@ -134,23 +133,58 @@ angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$loca
 		r.changePassword=function(){
 			
 		}
+		r.open = function($event){
+			r.status.opened = true
+		}
+		r.today = function() {
+			r.dt = new Date();
+		}
+		r.status = {
+			opened: false
+		}
 		r.refreshTasks=function(){
 			console.log("Tasks refreshed")
 			$http.get("/task")
 			.then(function(response){
 				if (response.data != undefined){
-					console.log(response.data)
 					user.setTasks(response.data);
 					r.tasks = user.getTasks();
+					r.types = ["Unsorted"];
+					for (var i=0; i<r.tasks.length; i++){
+						var found = false;
+						var task = r.tasks[i];
+						for (var j=0; j<r.types.length; j++){
+							var type = r.types[j];
+							if (type == task.taskType) found = true
+						}
+						if (!found) r.types.push(task.taskType)
+					}
 				}
 			})
 		}
+		r.setTaskCompletion = function(taskId, isDone){
+			$http.put("/task/" + taskId, { 
+				done: isDone
+			}).then(function(response){ 
+				r.refreshTasks();
+			})
+		}
+		r.updateTask=function(taskId, changes){
+			console.log("Updating task")
+			$http.put("/task/" + taskid, changes).then(function(response){ 
+				r.refreshTasks();
+			})
+		}
 		r.createTask=function(){
+			if (r.taskType === undefined){
+				r.taskType = "Unsorted"
+			}
 			var request = {
 				description: r.taskDescription,
 				priority: r.priority,
 				taskType: r.taskType,
 				done: false,
+				datePlanned: r.dueDate,
 				owner: user.getUserId()
 			};
 			console.log("oh wait", request);
@@ -162,6 +196,7 @@ angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$loca
 				console.log(response)
 			})
 		}
+		r.refreshTasks();
 	}]);
 angular.module("myAgenda").directive('equals', function() {
   return {
@@ -191,21 +226,22 @@ angular.module("myAgenda").directive('equals', function() {
     }
   }
 })
-angular.module("myAgenda").service('userService', function(){
-	var userid = 0;
+angular.module("myAgenda").factory('userService', ['$cookieStore', function($cookies){
+	var userid = $cookies.get('userid');
 	var tasks = {};
 	return {
 		getUserId: function (){
 			return userid
 		},
 		setTasks: function (value){
-			tasks = {}
+			tasks = value
 		},
 		getTasks: function(){
 			return tasks;
 		},
 		setUserId: function (value){
 			userid = value
+			$cookies.put('userid', value);
 		}
 	}
-})
+}]);

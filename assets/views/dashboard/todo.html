@@ -12,15 +12,14 @@
  					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
  						<input type=text ng-model="taskType" name="type" class="form-control input-lg" placeholder="Task type">
 					</div>
-					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-4">
-						<h3>Due Date:</h3>
-			              <datepicker ng-model="dueDate" min-date="minDate" show-weeks="true" custom-class="getDayClass(date, mode)"></datepicker>
+					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+						<p class="input-group">
+							<input type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="dueDate" is-open="status.opened" min-date="minDate" max-date="'2020-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" close-text="Close" placeholder="Due Date (You can leave it empty)"/>
+							<span class="input-group-btn">
+								<button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+							</span>
+						</p>
 	              	</div>
-	              	<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-5">
-			              <button type="button" class="btn btn-primary" ng-model="leaveopen" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
-			              	Leave due date open
-			              </button>
-					</div>
  					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
  						<h3>Priority:</h3>
 						<select class="form-control" ng-model="priority" ng-options="opt for opt in [1, 2, 3, 4, 5, 6, 7, 8, 9]"></select>

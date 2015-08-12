@@ -3,12 +3,36 @@
 	<span class="glyphicon glyphicon-tasks bg-fade"></span>
 	<div class=jumbotron>
 		<div class=container elem-ready='refreshTasks()'>
-			<div ng-show="!tasks.length">
+			<div ng-show="types.length == 0">
 				<h1>Welcome!</h1> You don't have any tasks available<br><br> <p> <a ui-sref=todo class="btn btn-primary btn-lg btn-outline btn-rounded">Create one!</a> </p>
 			</div>
-			<div ng-repeat="task in tasks">
-				{{ task.description }}
-			</div>
+			<accordion ng-show="types.length > 0">
+				<div ng-repeat="type in types">
+					<accordion-group>
+						<accordion-heading><h3>{{ type }}</h3></accordion-heading>
+							<div ng-repeat="task in tasks | filter: type | orderBy:'-priority'">
+								<div class="panel-body row">
+									<div class="col-md-1">
+										<button type="button" class="btn btn-primary" ng-model ="task.done" ng-click="setTaskCompletion(task.id, !task.done)">
+											<i ng-show="task.done" class="glyphicon glyphicon-ok"></i>
+											<i ng-show="!task.done" class="glyphicon glyphicon-unchecked"></i>
+										</button>
+									</div>
+									<div class="col-md-9">
+										<h4> ({{task.priority}}) {{ task.description }} </h4>
+									</div>
+									<div class="col-md-2">
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-default" ng-click="removeTask(task.id)"><i class="glyphicon glyphicon-pencil"></i></button>
+											<button type="button" class="btn btn-default" ng-click="removeTask(task.id)"><i class="glyphicon glyphicon-remove"></i></button>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</accordion-group>
+				</div>
+			</accordion>
 		</div>
 	</div>
 </div>
