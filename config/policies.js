@@ -52,7 +52,7 @@ module.exports.policies = {
 
   'user': false,
 
-  'task': ['passport', 'bearerAuth', 'sessionAuth'],
+  'task': ['passport', 'sessionAuth'],
 
   'auth': {
     '*': ['passport']

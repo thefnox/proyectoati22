@@ -3,29 +3,56 @@
 	<span class="glyphicon glyphicon-tasks bg-fade"></span>
 	<div class=jumbotron>
 		<div class=container elem-ready='refreshTasks()'>
-			<div ng-show="types.length == 0">
+			<div ng-show="tasks.length == 0">
 				<h1>Welcome!</h1> You don't have any tasks available<br><br> <p> <a ui-sref=todo class="btn btn-primary btn-lg btn-outline btn-rounded">Create one!</a> </p>
 			</div>
-			<accordion ng-show="types.length > 0">
+			<accordion ng-show="tasks.length > 0" is-open=true>
 				<div ng-repeat="type in types">
 					<accordion-group>
 						<accordion-heading><h3>{{ type }}</h3></accordion-heading>
 							<div ng-repeat="task in tasks | filter: type | orderBy:'-priority'">
 								<div class="panel-body row">
-									<div class="col-md-1">
-										<button type="button" class="btn btn-primary" ng-model ="task.done" ng-click="setTaskCompletion(task.id, !task.done)">
-											<i ng-show="task.done" class="glyphicon glyphicon-ok"></i>
-											<i ng-show="!task.done" class="glyphicon glyphicon-unchecked"></i>
-										</button>
+									<div ng-show="!task.editing">
+										<div class="col-md-1">
+											<button type="button" class="btn btn-primary" ng-model ="task.done" ng-click="setTaskCompletion(task.id, !task.done)">
+												<i ng-show="task.done" class="glyphicon glyphicon-ok"></i>
+												<i ng-show="!task.done" class="glyphicon glyphicon-unchecked"></i>
+											</button>
+										</div>
+										<div class="col-md-9">
+											<h4> ({{task.priority}}) {{ task.description }} </h4><h4 ng-show="task.datePlanned != undefined">({{ task.datePlanned | date:'MM/dd/yyyy @ h:mma' }})</h4>
+										</div>
+										<div class="col-md-2">
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-click="task.editing = !task.editing"><i class="glyphicon glyphicon-pencil"></i></button>
+												<button type="button" class="btn btn-default" ng-click="deleteTask(task.id)"><i class="glyphicon glyphicon-remove"></i></button>
+											</span>
+										</div>
 									</div>
-									<div class="col-md-9">
-										<h4> ({{task.priority}}) {{ task.description }} </h4>
-									</div>
-									<div class="col-md-2">
-										<span class="input-group-btn">
-											<button type="button" class="btn btn-default" ng-click="removeTask(task.id)"><i class="glyphicon glyphicon-pencil"></i></button>
-											<button type="button" class="btn btn-default" ng-click="removeTask(task.id)"><i class="glyphicon glyphicon-remove"></i></button>
-										</span>
+									<div ng-show="task.editing">
+										<form role=form name="edittaskform" ng-submit="updateTask(task.id, task)" novalidate>
+						 					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+						 						<input type=text ng-model="task.description" name="description" class="form-control input-lg" placeholder="Task description" required>
+											</div>
+						 					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+						 						<input type=text ng-model="task.taskType" name="type" class="form-control input-lg" placeholder="Task type">
+											</div>
+											<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+												<p class="input-group">
+													<input type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="task.datePlanned" is-open="status.opened" min-date="minDate" max-date="'2020-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" close-text="Close" placeholder="Due Date (You can leave it empty)"/>
+													<span class="input-group-btn">
+														<button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+													</span>
+												</p>
+							              	</div>
+						 					<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-2">
+						 						<h3>Priority:</h3>
+												<select class="form-control" ng-model="task.priority" ng-options="opt for opt in [1, 2, 3, 4, 5, 6, 7, 8, 9]"></select>
+											</div>
+											<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-5">
+												<button ng-disabled="createtaskform.description.$invalid || createtaskform.type.$invalid" type=submit class="btn btn-blue btn-lg btn-rounded">Edit Task</button>
+											</div>
+										</form>
 									</div>
 								</div>
 							</div>

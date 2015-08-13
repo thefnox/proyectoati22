@@ -3,8 +3,38 @@
 	<h2>Pending <small>tasks</small></h2>
 	<span class="glyphicon glyphicon-calendar bg-fade"></span>
 	<div class=jumbotron>
-		<div class=container elem-ready='refreshTasks()'>
-			<p> <a class="btn btn-primary btn-lg btn-outline btn-rounded">Learn more</a> </p>
+		<div class=container ng-repeat="task in tasks | todayFilter as results">
+			<div class="panel-body row">
+				<div class="col-md-1">
+					<button type="button" class="btn btn-primary" ng-model ="task.done" ng-click="setTaskCompletion(task.id, !task.done)">
+						<i ng-show="task.done" class="glyphicon glyphicon-ok"></i>
+						<i ng-show="!task.done" class="glyphicon glyphicon-unchecked"></i>
+					</button>
+				</div>
+				<div class="col-md-9">
+					<h4> [{{task.priority}}] {{ task.description }} ({{ task.datePlanned | date:'MM/dd/yyyy @ h:mma' }}) </h4>
+				</div>
+				<div class="col-md-2">
+					<span class="input-group-btn">
+						<div class="btn-group" dropdown is-open="status.isopen">
+						<button id="single-button" type="button" class="btn btn-primary" dropdown-toggle ng-disabled="disabled">
+							Reschedule <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="single-button">
+							<li role="menuitem"><a ng-click="reschedule(task.id, 'morning')">Morning</a></li>
+							<li role="menuitem"><a ng-click="reschedule(task.id, 'evening')">Evening</a></li>
+							<li role="menuitem"><a ng-click="reschedule(task.id, 'night')">Night</a></li>
+							<li role="menuitem"><a ng-click="reschedule(task.id, 'tomorrow')">Tomorrow</a></li>
+							<li role="menuitem"><a ng-click="reschedule(task.id, 'aftertomorrow')">After Tomorrow</a></li>
+							<li role="menuitem"><a ng-click="reschedule(task.id, 'nextweek')">Next Week</a></li>
+						</ul>
+						</div>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class=container ng-if="results.length == 0">
+				Looks like you have nothing scheduled for today!
 		</div>
 	</div>
 </div>

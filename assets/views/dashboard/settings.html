@@ -25,9 +25,49 @@
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading"><h3>Change your moments</h3></div>
-				<form role=form name="changemomentsform" ng-submit=changeMoments() novalidate>
+				<form role=form name="changemomentsform" ng-submit=changeDates() novalidate>
 	 				<div class="form-content panel-body">
-
+						<form role=form name="changemomentsform" ng-submit=changeMoments() novalidate>
+			 				<div class="form-content panel-body">
+			 					<div class="form-group col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-4">
+			 						<h4>Morning:</h4>
+			 						<timepicker ng-model="morning" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+								</div>
+							</div>
+			 				<div class="form-content panel-body">
+			 					<div class="form-group col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-4">
+			 						<h4>Evening:</h4>
+			 						<timepicker ng-model="evening" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+								</div>
+							</div>
+			 				<div class="form-content panel-body">
+			 					<div class="form-group col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-4">
+			 						<h4>Night:</h4>
+			 						<timepicker ng-model="night" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+								</div>
+							</div>
+			 				<div class="form-content panel-body">
+			 					<div class="form-group col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-4">
+			 						<h4>Tomorrow:</h4>
+			 						<timepicker ng-model="tomorrow" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+								</div>
+							</div>
+			 				<div class="form-content panel-body">
+			 					<div class="form-group col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-4">
+			 						<h4>After Tomorrow:</h4>
+			 						<timepicker ng-model="aftertomorrow" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+								</div>
+							</div>	
+			 				<div class="form-content panel-body">
+			 					<div class="form-group col-md-6 col-lg-6 col-md-offset-6 col-lg-offset-4">
+			 						<h4>Next Week:</h4>
+			 						<timepicker ng-model="aftertomorrow" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+								</div>
+							</div>
+							<div class="form-group col-md-8 col-lg-8 col-md-offset-8 col-lg-offset-4">
+								<button type=submit class="btn btn-blue btn-lg btn-rounded">Change your Moments</button>
+							</div>
+						</form>
 					</div>
 				</form>
 			</div>
