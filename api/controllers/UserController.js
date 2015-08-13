@@ -7,21 +7,23 @@
 
 module.exports = {
 	changePassword: function(req, res){
-		var oldpass = req.params("oldpassword");
-		var newpass = req.params("newpassword");
+		var oldpass = req.param("oldpassword");
+		var newpass = req.param("newpassword");
 		User.findOne({ id: req.user.id }, function (err, user) {
 			Passport.findOne({
 				protocol : 'local'
 				, user     : user.id
 			}, function (err, passport) {
 				if (passport) {
-					passport.validatePassword(oldpassword, function (err, result) {
+					passport.validatePassword(oldpass, function (err, result) {
 						if (!result)
 						{
 							res.badRequest();
 						}
 						else
 						{
+							passport.password = newpass;
+							passport.save();
 							res.ok();
 						}
 					});

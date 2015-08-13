@@ -141,7 +141,15 @@ angular.module("myAgenda").controller("DashboardCtrl",["$scope","$state", "$loca
 			})
 		}
 		r.changePassword=function(){
-			
+			$http.post('/changepassword', {
+				oldpassword: r.oldpassword,
+				newpassword: r.newpassword
+			}).then(function(response){
+				console.log("Response is ", response)
+				r.logout()
+			}, function(response){
+				console.log("Error is ", response)
+			})
 		}
 		r.open = function($event){
 			r.status.opened = true

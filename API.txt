@@ -1,0 +1,95 @@
+User{
+	'changePassword':
+		Descripcion: Permite al usuario actual cambiar de contraseña,
+		Ruta: '/changepassword'
+		Metodos: 'POST',
+		Parametros: {
+			'oldpassword': El password viejo;
+			'newpassword': El password nuevo;
+		}
+		Resultados: {
+			403: Falla de autorizacion,
+			401: La validacion de cualquier parametro fallo,
+			200: El password ha sido cambiado satisfactoriamente
+		}
+}
+
+Task{
+	'create':
+		Descripcion: Crea una nueva tarea para el usuario actual. Se puede colocar cualquier parametro del modelo, solo los especificados son obligatorios
+		Ruta: '/task'
+		Metodos: 'POST',
+		Parametros: {
+			'owner': El user id del usuario dueño de esta tarea,
+			'description': La descripcion de la tarea,
+		}
+		Resultados: {
+			403: Falla de autorizacion,
+			401: La peticion tiene argumentos invalidos,
+			200: La tarea fue creada satisfactoriamente, regresa un JSON con la data de la tarea creada.
+		}
+	'findAll':
+		Descripcion: Busca todas las tareas del usuario actual
+		Ruta: '/task'
+		Metodos: 'GET,
+		Parametros: Ninguno
+		Resultados: {
+			403: Falla de autorizacion,
+			200: La tarea fue creada satisfactoriamente, regresa un JSON con toda la data de las tareas
+		}
+	'find':
+		Descripcion: Busca una tareas del usuario actual
+		Ruta: '/task/:id'
+		Metodos: 'GET',
+		Parametros: 'id': El task id de la tarea a buscar
+		Resultados: {
+			403: Falla de autorizacion,
+			200: Regresa un JSON con toda la data de las tarea
+		}
+	'update':
+		Descripcion: Actualiza la data de una tarea del usuario actual
+		Ruta: '/task/:id'
+		Metodos: 'PUT',
+		Parametros: Un JSON con los datos a actualizar, ID de la tarea (parte de la ruta)
+		Resultados: {
+			403: Falla de autorizacion,
+			200: La tarea fue actualizada satisfactoriamente
+		}
+	'delete':
+		Descripcion: Elimina una tarea del usuario actual
+		Ruta: '/task/:id'
+		Metodos: 'DELETE',
+		Parametros: Un JSON con los datos a actualizar, ID de la tarea (parte de la ruta)
+		Resultados: {
+			403: Falla de autorizacion,
+			200: La tarea fue eliminada satisfactoriamente
+		}
+}
+
+Auth{
+	'register':
+		Descripcion: Crea un nuevo usuario
+		Ruta: 'auth/local/register'
+		Metodos: ['GET', 'POST']
+		Parametros:{
+			'username': El nombre de usuario para el usuario a crear,
+			'password': El password de dicho usuario, debe ser mayor a 8 caracteres,
+			'email': El email del usuario a crear
+		}
+		Resultados: {
+			401: La peticion es incorrecta, retorna un JSON con todos los errores de la peticion traducidos con el 'locale' actual
+			200: El usuario fue creado satisfactoriamente
+		}
+	'login':
+		Descripcion: Crea una nueva sesion de usuario
+		Ruta: 'auth/local/login'
+		Metodos: ['GET', POST]
+		Parametros:{
+			'identifier': El nombre de usuario, o el email del usuario que se desea logear,
+			'password': El password de dicho usuario
+		}
+		Resultados: {
+			401: La peticion fue incorrecta, retorna un JSON con los errores de la peticion traducidos con el 'locale' actual
+			200: La sesion fue iniciada satisfactoriamente, se retorna el user id.
+		}
+}
